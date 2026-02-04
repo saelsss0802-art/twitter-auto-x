@@ -101,7 +101,7 @@ knowledge/
 
 ### Knowledge API (auth required)
 
-All knowledge endpoints require the `Authorization: Bearer <KNOWLEDGE_API_SECRET>` header.
+All knowledge endpoints require the admin session cookie (same as other Phase4 admin APIs).
 
 - `GET /api/knowledge/types`
 - `GET /api/knowledge/types/{typeId}`

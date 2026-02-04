@@ -1,20 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { ADMIN_COOKIE_NAME, getAdminSecret, isValidSession } from '@/lib/auth';
 import { listKnowledgeTypes } from '@/lib/knowledge';
 
-const getKnowledgeSecret = () => process.env.KNOWLEDGE_API_SECRET ?? '';
-
-const isAuthorized = (request: NextRequest) => {
-  const secret = getKnowledgeSecret();
+const isAuthorized = async (request: NextRequest) => {
+  const secret = getAdminSecret();
   if (!secret) {
     return false;
   }
-  const authHeader = request.headers.get('authorization') ?? '';
-  return authHeader === `Bearer ${secret}`;
+  const sessionToken = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  return isValidSession(sessionToken, secret);
 };
 
 export async function GET(request: NextRequest) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
