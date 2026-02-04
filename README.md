@@ -88,6 +88,25 @@ Create cron-job.org jobs that call the Cron API endpoints with the shared secret
 - **Request Header**:
   - `Authorization: Bearer <CRON_SECRET>`
 
+## Knowledge Files (Phase5)
+
+Knowledge Markdown files live under the `knowledge/` directory in this repo.
+
+```
+knowledge/
+  types/
+  templates/
+  general/
+```
+
+### Knowledge API (auth required)
+
+All knowledge endpoints require the `Authorization: Bearer <KNOWLEDGE_API_SECRET>` header.
+
+- `GET /api/knowledge/types`
+- `GET /api/knowledge/types/{typeId}`
+- `GET /api/knowledge/general/x-algorithm`
+
 ### Fetch analytics (once per day)
 
 - **URL**: `https://<your-domain>/api/cron/fetch-analytics`
