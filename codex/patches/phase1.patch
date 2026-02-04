@@ -1,0 +1,207 @@
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000000000000000000000000000000000000..fa4266da3c5f1d451af5136272f1de1c5d53528a
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,2 @@
++NEXT_PUBLIC_SUPABASE_URL="https://example.supabase.co"
++NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000000000000000000000000000000000000..08a703aab50ea3b126e0d1877cfb01f9b12b9572
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,8 @@
++/node_modules
++/.next
++/out
++.env*.local
++npm-debug.log*
++yarn-debug.log*
++yarn-error.log*
++.DS_Store
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..8c9dbde829ed9811b698fe8d2f6d887227b80474
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,16 @@
++# Twitter Auto X
++
++Phase1 starter for the Twitter（X）自動投稿システム.
++
++## Setup
++
++```bash
++npm install
++npm run dev
++```
++
++Open http://localhost:3000 to confirm the app displays **Setup OK**.
++
++## Environment Variables
++
++Copy `.env.example` to `.env.local` and fill in your Supabase credentials.
+diff --git a/app/globals.css b/app/globals.css
+new file mode 100644
+index 0000000000000000000000000000000000000000..39171c9aabb50ebe1bc141fa8871d0e871d2fe2d
+--- /dev/null
++++ b/app/globals.css
+@@ -0,0 +1,21 @@
++:root {
++  color-scheme: light;
++}
++
++body {
++  margin: 0;
++  font-family: system-ui, -apple-system, sans-serif;
++  background: #f7f7f8;
++  color: #111827;
++}
++
++main {
++  min-height: 100vh;
++  display: grid;
++  place-items: center;
++}
++
++h1 {
++  font-size: 2.5rem;
++  margin: 0;
++}
+diff --git a/app/layout.tsx b/app/layout.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..e3d3e56ab790ead583a1eccefbdf56540899112c
+--- /dev/null
++++ b/app/layout.tsx
+@@ -0,0 +1,21 @@
++import './globals.css';
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: 'Twitter Auto X',
++  description: 'Setup for Twitter Auto X'
++};
++
++export default function RootLayout({
++  children
++}: {
++  children: React.ReactNode;
++}) {
++  return (
++    <html lang="ja">
++      <body>
++        {children}
++      </body>
++    </html>
++  );
++}
+diff --git a/app/page.tsx b/app/page.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..cafce6d745ab156bf324eabef6f9ea76f63fdcfa
+--- /dev/null
++++ b/app/page.tsx
+@@ -0,0 +1,7 @@
++export default function Home() {
++  return (
++    <main>
++      <h1>Setup OK</h1>
++    </main>
++  );
++}
+diff --git a/lib/supabaseClient.ts b/lib/supabaseClient.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..ab81bd4115d56efd49a94d8ad23549f0ec900207
+--- /dev/null
++++ b/lib/supabaseClient.ts
+@@ -0,0 +1,6 @@
++import { createClient } from '@supabase/supabase-js';
++
++const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
++const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
++
++export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+diff --git a/next-env.d.ts b/next-env.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..4f11a03dc6cc37f2b5105c08f2e7b24c603ab2f4
+--- /dev/null
++++ b/next-env.d.ts
+@@ -0,0 +1,5 @@
++/// <reference types="next" />
++/// <reference types="next/image-types/global" />
++
++// NOTE: This file should not be edited
++// see https://nextjs.org/docs/basic-features/typescript for more information.
+diff --git a/next.config.js b/next.config.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..6d32668bfbf51bc7b656230fdc862acb4c837da0
+--- /dev/null
++++ b/next.config.js
+@@ -0,0 +1,6 @@
++/** @type {import('next').NextConfig} */
++const nextConfig = {
++  reactStrictMode: true
++};
++
++module.exports = nextConfig;
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..f2121a66f5074b9f5922828953702be302c0ff74
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,25 @@
++{
++  "name": "twitter-auto-x",
++  "version": "0.1.0",
++  "private": true,
++  "scripts": {
++    "dev": "next dev",
++    "build": "next build",
++    "start": "next start",
++    "lint": "next lint"
++  },
++  "dependencies": {
++    "@supabase/supabase-js": "^2.39.7",
++    "next": "14.1.0",
++    "react": "18.2.0",
++    "react-dom": "18.2.0"
++  },
++  "devDependencies": {
++    "@types/node": "20.11.10",
++    "@types/react": "18.2.55",
++    "@types/react-dom": "18.2.19",
++    "eslint": "8.56.0",
++    "eslint-config-next": "14.1.0",
++    "typescript": "5.3.3"
++  }
++}
+diff --git a/tsconfig.json b/tsconfig.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..fae1a23b17825ba361247b2ae9b9201dc047352a
+--- /dev/null
++++ b/tsconfig.json
+@@ -0,0 +1,24 @@
++{
++  "compilerOptions": {
++    "target": "ES2020",
++    "lib": ["dom", "dom.iterable", "esnext"],
++    "allowJs": false,
++    "skipLibCheck": true,
++    "strict": true,
++    "noEmit": true,
++    "esModuleInterop": true,
++    "module": "esnext",
++    "moduleResolution": "bundler",
++    "resolveJsonModule": true,
++    "isolatedModules": true,
++    "jsx": "preserve",
++    "incremental": true,
++    "plugins": [
++      {
++        "name": "next"
++      }
++    ]
++  },
++  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
++  "exclude": ["node_modules"]
++}
