@@ -236,3 +236,25 @@ cron-job.org → Vercel(Next.js API) → Supabase(DB/Storage)
 - 複数アカウントでも同時投稿はしない（posting_jobs直列）
 - 投稿間隔/日次上限/休止時間を設定できる
 - トークン失効時はジョブ失敗として可視化し、再連携で復旧
+
+
+
+## 0. 開発フェーズ定義（Codex向け）
+本プロジェクトは段階的に実装する。
+
+### Phase1: プロジェクト土台（起動できる状態）
+- Next.js(App Router)+TypeScript の雛形
+- Supabase client（env読み取りまで、実接続/DDLは不要）
+- .env.example の追加（キーはダミー）
+- README にローカル起動手順（npm install / npm run dev）
+- 画面は最低限でOK（/ で “Setup OK” 表示）
+
+### Phase2: DBスキーマ（DDL）
+- supabase/schema.sql の作成（6章のテーブル一式、制約含む）
+
+### Phase3: Cron API（外部cron起動）
+- /api/cron/run-posting と /api/cron/fetch-analytics（7章）
+- secret/HMAC保護、ロック/冪等性、リトライ
+
+### Phase4以降
+- 認証UI、X OAuth、投稿生成、投稿管理UI、分析UIなど（2章の各機能）
