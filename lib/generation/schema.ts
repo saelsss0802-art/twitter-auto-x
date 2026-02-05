@@ -4,6 +4,15 @@ export type GenerateSingleRequest = {
   theme?: string;
   keywords?: string[];
   includeHashtags?: boolean;
+  accountType?: string;
+  persona?: {
+    forbidden_words?: string[];
+  };
+  validation?: {
+    maxLinks?: number;
+    maxHashtags?: number;
+    maxNewlines?: number;
+  };
 };
 
 export type GenerateWeeklyRequest = {
@@ -31,6 +40,9 @@ const isNonEmptyString = (value: unknown): value is string =>
 
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string');
+
+const isOptionalNonNegativeInteger = (value: unknown): value is number =>
+  value === undefined || (Number.isInteger(value) && value >= 0);
 
 export const validateGenerateSingleRequest = (payload: unknown): ValidationResult<GenerateSingleRequest> => {
   if (!payload || typeof payload !== 'object') {
@@ -61,6 +73,45 @@ export const validateGenerateSingleRequest = (payload: unknown): ValidationResul
     return { ok: false, error: 'includeHashtags must be a boolean.' };
   }
 
+  const accountType = isNonEmptyString(record.accountType) ? record.accountType.trim() : undefined;
+  const persona =
+    record.persona === undefined
+      ? undefined
+      : typeof record.persona === 'object' && record.persona !== null
+        ? (record.persona as Record<string, unknown>)
+        : null;
+  if (persona === null) {
+    return { ok: false, error: 'persona must be an object.' };
+  }
+
+  const forbiddenWords = persona?.forbidden_words;
+  if (forbiddenWords !== undefined && !isStringArray(forbiddenWords)) {
+    return { ok: false, error: 'persona.forbidden_words must be an array of strings.' };
+  }
+
+  const validation =
+    record.validation === undefined
+      ? undefined
+      : typeof record.validation === 'object' && record.validation !== null
+        ? (record.validation as Record<string, unknown>)
+        : null;
+  if (validation === null) {
+    return { ok: false, error: 'validation must be an object.' };
+  }
+
+  const maxLinks = validation?.maxLinks;
+  const maxHashtags = validation?.maxHashtags;
+  const maxNewlines = validation?.maxNewlines;
+  if (!isOptionalNonNegativeInteger(maxLinks)) {
+    return { ok: false, error: 'validation.maxLinks must be a non-negative integer.' };
+  }
+  if (!isOptionalNonNegativeInteger(maxHashtags)) {
+    return { ok: false, error: 'validation.maxHashtags must be a non-negative integer.' };
+  }
+  if (!isOptionalNonNegativeInteger(maxNewlines)) {
+    return { ok: false, error: 'validation.maxNewlines must be a non-negative integer.' };
+  }
+
   return {
     ok: true,
     value: {
@@ -69,6 +120,16 @@ export const validateGenerateSingleRequest = (payload: unknown): ValidationResul
       theme,
       keywords,
       includeHashtags,
+      accountType,
+      persona: forbiddenWords ? { forbidden_words: forbiddenWords } : undefined,
+      validation:
+        validation === undefined
+          ? undefined
+          : {
+              maxLinks,
+              maxHashtags,
+              maxNewlines,
+            },
     },
   };
 };
