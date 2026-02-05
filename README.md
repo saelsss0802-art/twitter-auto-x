@@ -107,6 +107,32 @@ All knowledge endpoints require the admin session cookie (same as other Phase4 a
 - `GET /api/knowledge/types/{typeId}`
 - `GET /api/knowledge/general/x-algorithm`
 
+## Post types & Generation preview (Phase6)
+
+### Post type list (auth required)
+
+```bash
+curl -X GET "http://localhost:3000/api/post-types" \
+  -b "cookie.txt"
+```
+
+### Generation preview (auth required, no AI)
+
+This endpoint assembles the prompt ingredients and returns them for debugging. In the next phase, the preview output will be sent to OpenRouter to generate actual drafts.
+
+```bash
+curl -X POST "http://localhost:3000/api/generate/preview" \
+  -H "Content-Type: application/json" \
+  -b "cookie.txt" \
+  -d '{
+    "accountId": "<ACCOUNT_ID>",
+    "typeId": "education",
+    "theme": "Xアルゴリズムの基礎",
+    "keywords": ["通知", "滞在時間"],
+    "includeHashtags": false
+  }'
+```
+
 ### Fetch analytics (once per day)
 
 - **URL**: `https://<your-domain>/api/cron/fetch-analytics`
