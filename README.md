@@ -16,6 +16,8 @@ Open http://localhost:3000 to confirm the app displays **Setup OK**.
 Copy `.env.example` to `.env.local` and fill in your Supabase credentials.
 
 - `ADMIN_PASSWORD`: Admin login password for Phase4 authentication.
+- `OPENROUTER_API_KEY`: OpenRouter API key for Phase7 single-shot generation.
+- `OPENROUTER_MODEL`: OpenRouter model name (defaults to `openai/gpt-4o-mini` if unset).
 
 ## Login (Phase4)
 
@@ -122,6 +124,21 @@ This endpoint assembles the prompt ingredients and returns them for debugging. I
 
 ```bash
 curl -X POST "http://localhost:3000/api/generate/preview" \
+  -H "Content-Type: application/json" \
+  -b "cookie.txt" \
+  -d '{
+    "accountId": "<ACCOUNT_ID>",
+    "typeId": "education",
+    "theme": "Xアルゴリズムの基礎",
+    "keywords": ["通知", "滞在時間"],
+    "includeHashtags": false
+  }'
+```
+
+### Single-shot generation (Phase7, auth required)
+
+```bash
+curl -X POST "http://localhost:3000/api/generate/single" \
   -H "Content-Type: application/json" \
   -b "cookie.txt" \
   -d '{
