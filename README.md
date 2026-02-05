@@ -30,7 +30,7 @@ Copy `.env.example` to `.env.local` and fill in your Supabase credentials.
 CLI login example (stores cookies to `cookie.txt`):
 
 ```bash
-curl -i -c cookie.txt -X POST "http://localhost:3000/login" \
+curl -i -c cookie.txt -X POST "http://localhost:3000/api/login" \
   -d "password=<ADMIN_PASSWORD>"
 ```
 

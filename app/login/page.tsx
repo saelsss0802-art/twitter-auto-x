@@ -20,7 +20,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             Invalid password. Please try again.
           </p>
         )}
-        <form className="mt-4 space-y-4" method="post" action="/login">
+        <form className="mt-4 space-y-4" method="post" action="/api/login">
           <input type="hidden" name="next" value={nextPath} />
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="password">
