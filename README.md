@@ -146,9 +146,46 @@ curl -X POST "http://localhost:3000/api/generate/single" \
     "typeId": "education",
     "theme": "Xアルゴリズムの基礎",
     "keywords": ["通知", "滞在時間"],
-    "includeHashtags": false
+    "includeHashtags": false,
+    "accountType": "adult",
+    "persona": {
+      "forbidden_words": ["spam", "clickbait"]
+    },
+    "validation": {
+      "maxLinks": 1,
+      "maxHashtags": 3,
+      "maxNewlines": 4
+    }
   }'
 ```
+
+#### Phase8 validation (safety rails)
+
+Single-shot generation now enforces a validation pass after generation.
+
+Validation items:
+
+- 280 character limit.
+- Forbidden words from `persona.forbidden_words`.
+- URL count limit (e.g. `validation.maxLinks`).
+- Hashtag count limit (e.g. `validation.maxHashtags`).
+- Newline count limit (e.g. `validation.maxNewlines`).
+
+If validation fails, the API will attempt **one** automatic rewrite (shorten/remove) and then return 422 with reasons if it still fails.
+
+Example 422 response:
+
+```json
+{
+  "error": "Validation failed.",
+  "reasons": [
+    "Content exceeds 280 characters.",
+    "Too many links (max 1)."
+  ]
+}
+```
+
+> Note: In the next phase, `persona` and `accountType` will be looked up from the database and applied automatically. Phase8 accepts them only from the request body.
 
 ### Fetch analytics (once per day)
 
