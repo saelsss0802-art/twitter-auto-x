@@ -18,6 +18,7 @@ Copy `.env.example` to `.env.local` and fill in your Supabase credentials.
 - `ADMIN_PASSWORD`: Admin login password for Phase4 authentication.
 - `OPENROUTER_API_KEY`: OpenRouter API key for Phase7 single-shot generation.
 - `OPENROUTER_MODEL`: OpenRouter model name (defaults to `openai/gpt-4o-mini` if unset).
+- `SUPABASE_SERVICE_ROLE_KEY`: Server-only Supabase key for Phase9 write operations (do **not** prefix with `NEXT_PUBLIC`).
 
 ## Login (Phase4)
 
@@ -186,6 +187,36 @@ Example 422 response:
 ```
 
 > Note: In the next phase, `persona` and `accountType` will be looked up from the database and applied automatically. Phase8 accepts them only from the request body.
+
+## Phase9: Persist drafts & scheduling (auth required, no AI)
+
+### Generate (stub) and save
+
+```bash
+curl -X POST "http://localhost:3000/api/generate/and-save" \
+  -H "Content-Type: application/json" \
+  -b "cookie.txt" \
+  -d '{
+    "accountId": "<ACCOUNT_ID>",
+    "typeId": "education",
+    "content": "Optional content override.",
+    "scheduledAt": "2025-01-01T09:00:00.000Z"
+  }'
+```
+
+### Create posting job manually
+
+```bash
+curl -X POST "http://localhost:3000/api/posting-jobs" \
+  -H "Content-Type: application/json" \
+  -b "cookie.txt" \
+  -d '{
+    "tweetId": "<TWEET_ID>",
+    "runAt": "2025-01-01T09:05:00.000Z"
+  }'
+```
+
+> Flow: `tweets(status=scheduled)` + `posting_jobs(status=pending)` are picked up by Phase3 `/api/cron/run-posting`.
 
 ### Fetch analytics (once per day)
 
