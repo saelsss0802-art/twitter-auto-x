@@ -11,6 +11,8 @@ const isStaticAsset = (pathname: string) =>
 
 const isLoginPath = (pathname: string) => pathname === '/login';
 
+const isApiLoginPath = (pathname: string) => pathname === '/api/login';
+
 const isCronApi = (pathname: string) => pathname.startsWith('/api/cron');
 
 const isApiRoute = (pathname: string) => pathname.startsWith('/api/');
@@ -18,7 +20,12 @@ const isApiRoute = (pathname: string) => pathname.startsWith('/api/');
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (isStaticAsset(pathname) || isLoginPath(pathname) || isCronApi(pathname)) {
+  if (
+    isStaticAsset(pathname) ||
+    isLoginPath(pathname) ||
+    isApiLoginPath(pathname) ||
+    isCronApi(pathname)
+  ) {
     return NextResponse.next();
   }
 
